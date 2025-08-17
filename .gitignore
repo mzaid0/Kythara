@@ -1,0 +1,23 @@
+# Common (frontend + backend)
+node_modules/
+package-lock.json
+.env
+
+# Editor / OS files
+.vscode/
+
+# Frontend 
+.next/
+out/
+
+# Next.js build cache
+.next/cache/
+
+# Backend 
+dist/
+build/
+*.tsbuildinfo
+
+# Prisma
+.prisma/
+prisma/migrations/

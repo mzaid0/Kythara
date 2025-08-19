@@ -29,7 +29,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             where: { email }
         })
 
-        if (!user || (await bcrypt.compare(password, user.password))) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
 
             res.status(400).json({
                 success: false,

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
-import { prisma } from "../../config/prisma";
+import { prisma } from "../../configs/prisma";
 import { generateToken, setTokensInCookies } from "../../helpers/auth-helpers";
 
 interface LoginUserBody {

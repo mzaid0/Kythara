@@ -21,7 +21,7 @@ export const protectAuthRules = arcjet(
                 rateLimit: {
                     mode: "LIVE",
                     interval: "10m",
-                    max: 5,
+                    max: 10,
                 },
             }),
         ],

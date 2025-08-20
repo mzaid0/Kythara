@@ -34,14 +34,14 @@ export async function setTokensInCookies({ res, accessToken, refreshToken }: Set
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 15 * 60 * 60
+        maxAge: 15 * 60 * 1000
     })
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     })
 
 }

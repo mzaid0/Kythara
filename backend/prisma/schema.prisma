@@ -22,3 +22,22 @@ enum Role {
   USER
   SUPER_ADMIN
 }
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  brand       String
+  description String
+  category    String
+  gender      String
+  sizes       String[]
+  colors      String[]
+  price       Float
+  stock       Int
+  soldCount   Int
+  rating      Float?
+  images      String[]
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updtedAt    DateTime @updatedAt
+}

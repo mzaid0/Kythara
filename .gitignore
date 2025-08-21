@@ -5,6 +5,7 @@ package-lock.json
 
 # Editor / OS files
 .vscode/
+revision.txt
 
 # Frontend 
 .next/
@@ -21,3 +22,4 @@ build/
 # Prisma
 .prisma/
 prisma/migrations/
+

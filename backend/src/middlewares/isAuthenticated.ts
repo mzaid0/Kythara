@@ -1,12 +1,6 @@
+import { User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-
-interface User {
-    id: string;
-    name: string | null;
-    email: string;
-    role: "USER" | "SUPER_ADMIN";
-}
 
 declare global {
     namespace Express {

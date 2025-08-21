@@ -10,7 +10,7 @@ interface ResponseBody {
     product: Product
 }
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response): Promise<void> => {
 
     try {
 

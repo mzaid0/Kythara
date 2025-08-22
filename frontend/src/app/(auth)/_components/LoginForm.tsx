@@ -91,7 +91,7 @@ const LoginForm = () => {
                         />
 
                         <div className="text-center">
-                            <h1 className="text-2xl font-semibold tracking-tight">
+                            <h1 className="text-2xl text-primary font-semibold tracking-tight">
                                 Welcome back
                             </h1>
                             <p className="mt-2 text-sm text-muted-foreground">

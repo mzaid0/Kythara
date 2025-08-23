@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { catchErrorHandler } from "@/errors/errorHandler"
 import { axiosClient } from "@/utils/axiosClient"
 import { create } from "zustand"
@@ -64,7 +65,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 try {
 
-                    const response = await axiosClient.post<RegisterResponse>("/register", {
+                    const response = await axiosClient.post<RegisterResponse>("/auth/register", {
                         name, email, password
                     })
 
@@ -84,7 +85,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 try {
 
-                    const response = await axiosClient.post<LoginResponse>("/login", {
+                    const response = await axiosClient.post<LoginResponse>("/auth/login", {
                         email, password
                     })
 
@@ -103,7 +104,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 try {
 
-                    const response = await axiosClient.post<LogoutResponse>("/logout")
+                    const response = await axiosClient.post<LogoutResponse>("/auth/logout")
 
                     set({ user: null, isLoading: false })
                     return response.data.message
@@ -119,7 +120,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 try {
 
-                    await axiosClient.post("/refresh-token")
+                    await axiosClient.post("/auth/refresh-token")
                     return true
 
                 } catch (error) {

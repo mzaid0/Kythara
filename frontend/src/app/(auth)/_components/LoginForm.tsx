@@ -61,7 +61,7 @@ const LoginForm = () => {
             }
             else {
                 showSuccessToast("Success", "Login successfully! Welcome to your Dashboard");
-                router.push("/admin")
+                router.push("/super-admin")
             }
         }
 

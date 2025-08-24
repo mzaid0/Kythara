@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
@@ -26,7 +27,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { RiCoupon4Line, RiCouponLine } from "react-icons/ri";
-
+import { MdOutlineCategory } from "react-icons/md";
+import { TbCategoryPlus } from "react-icons/tb";
 
 const sidebarVariants = {
   open: {
@@ -86,35 +88,54 @@ export function AdminSidebar({ onExpandChange }: { onExpandChange?: (expanded: b
     },
     {
       id: 2,
+      title: "Orders",
+      icon: <SendToBack className="h-4 w-4" />,
+      href: "/super-admin/orders",
+    },
+    {
+      id: 3,
       title: "Products",
       icon: <ShoppingBasket className="h-4 w-4" />,
       href: "/super-admin/products",
     },
     {
-      id: 3,
-      title: "Add Product",
-      icon: <MdOutlineProductionQuantityLimits className="h-4 w-4" />,
-      href: "/super-admin/products/add",
-    },
-    {
       id: 4,
-      title: "Orders",
-      icon: <SendToBack className="h-4 w-4" />,
-      href: "/super-admin/orders",
+      title: "Categories",
+      icon: <MdOutlineCategory className="h-4 w-4" />,
+      href: "/super-admin/categories",
     },
+
     {
       id: 5,
       title: "Coupons",
       icon: <RiCouponLine className="h-4 w-4" />,
       href: "/super-admin/coupons",
     },
+  ];
+
+  const additionalLinks = [
     {
-      id: 6,
+      id: 1,
+      title: "Add Product",
+      icon: <MdOutlineProductionQuantityLimits className="h-4 w-4" />,
+      href: "/super-admin/products/add",
+    },
+
+    {
+      id: 2,
+      title: "Add Category",
+      icon: <TbCategoryPlus className="h-4 w-4" />,
+      href: "/super-admin/categories/add",
+    },
+    {
+      id: 3,
       title: "Add Coupon",
       icon: <RiCoupon4Line className="h-4 w-4" />,
       href: "/super-admin/coupons/add",
     },
   ];
+
+
 
   const handleExpandChange = (expanded: boolean) => {
     setIsCollapsed(!expanded);
@@ -166,8 +187,31 @@ export function AdminSidebar({ onExpandChange }: { onExpandChange?: (expanded: b
                 <ScrollArea className="h-16 grow p-2">
                   <div className={cn("flex w-full flex-col gap-1")}>
 
+                    <p className="text-xs ">Main</p>
+
                     {/* Primary navigation options */}
                     {sideBarOptions.map((option) => (
+                      <Link key={option.id}
+                        href={option.href}
+                        className={cn(
+                          "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
+                          pathname?.includes(option.href) &&
+                          "bg-muted text-primary",
+                        )}
+                      >
+                        {option.icon}
+                        <motion.li variants={variants}>
+                          {!isCollapsed && (
+                            <p className="ml-2 text-sm font-medium">{option.title}</p>
+                          )}
+                        </motion.li>
+                      </Link>
+                    ))}
+
+                    <Separator className="w-full" />
+
+                    <p className="text-xs ">Add</p>
+                    {additionalLinks.map((option) => (
                       <Link key={option.id}
                         href={option.href}
                         className={cn(
@@ -190,7 +234,7 @@ export function AdminSidebar({ onExpandChange }: { onExpandChange?: (expanded: b
 
               <div className="flex flex-col p-2">
                 <Link
-                  href="/settings/integrations"
+                  href="/super-admin/settings"
                   className="mt-auto flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary"
                 >
                   <Settings className="h-4 w-4 shrink-0" />{" "}

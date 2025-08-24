@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export function NotFoundPage() {
+  
   const router = useRouter()
 
   return (

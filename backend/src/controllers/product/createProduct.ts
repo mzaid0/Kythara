@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import cloudinary from "../../configs/cloudinary";
 import { prisma } from "../../configs/prisma";
-import { unlinkSync } from "fs";
 import { Product } from "@prisma/client";
 
 interface ResponseBody {
@@ -13,20 +11,7 @@ interface ResponseBody {
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
 
     try {
-
-        const { name, brand, description, category, colors, gender, price, sizes, stock } = req.body as Product
-
-        const files = req.files as Express.Multer.File[]
-
-        const uploadImagesPromise = files.map((file) => {
-            return cloudinary.uploader.upload(file.path, {
-                folder: "kythara"
-            })
-        })
-
-        const uploadResults = await Promise.all(uploadImagesPromise)
-
-        const images = uploadResults.map(image => image.secure_url)
+        const { name, brand, description, category, colors, gender, price, sizes, stock, images } = req.body as Product;
 
         const newProduct = await prisma.product.create({
             data: {
@@ -41,26 +26,24 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
                 stock: Number(stock),
                 soldCount: 0,
                 rating: null,
-                images,
+                images: typeof images === 'string' ? JSON.parse(images) : images,
                 isFeatured: false
             }
         })
 
-        files.forEach(file => unlinkSync(file.path))
-
         const responseBody: ResponseBody = {
             success: true,
-            message: "Product created successfully!",
+            message: "Product created successfully",
             product: newProduct
         }
 
-        res.status(201).json(responseBody)
+        res.status(201).json(responseBody);
 
     } catch (error) {
-        console.error("Error creating product:", error)
+        console.log(error);
         res.status(500).json({
             success: false,
             message: "Failed to create product"
-        })
+        });
     }
 }

@@ -5,6 +5,7 @@ import express from "express"
 import { prisma } from "./configs/prisma"
 import authRoutes from "./routes/auth.route"
 import productRoutes from "./routes/product.route"
+import imagesRoutes from "./routes/images.route"
 
 
 dotenv.config()
@@ -16,7 +17,7 @@ const corsOptions = {
     origin: process.env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["content-type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization"]
 }
 
 app.use(cors(corsOptions))
@@ -25,6 +26,7 @@ app.use(express.json())
 
 app.use("/api/auth", authRoutes)
 app.use("/api/product", productRoutes)
+app.use("/api/images", imagesRoutes)
 
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port:${PORT}`)

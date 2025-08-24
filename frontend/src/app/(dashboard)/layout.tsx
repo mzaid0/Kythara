@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { SessionNavBar } from "./_components/sidebar";
+import { AdminSidebar } from "./_components/AdminSidebar";
 
 export default function SuperAdminLayout({
     children,
@@ -12,7 +12,7 @@ export default function SuperAdminLayout({
     return (
         <div className="flex h-screen w-screen">
 
-            <SessionNavBar onExpandChange={setIsSidebarExpanded} />
+            <AdminSidebar onExpandChange={setIsSidebarExpanded} />
 
             <div
                 className="flex-1 overflow-auto transition-all duration-200 ease-out"
@@ -21,7 +21,9 @@ export default function SuperAdminLayout({
                     width: isSidebarExpanded ? "calc(100% - 15rem)" : "calc(100% - 3.05rem)",
                 }}
             >
-                {children}
+                <div className="px-10 py-5">
+                    {children}
+                </div>
             </div>
         </div>
     );

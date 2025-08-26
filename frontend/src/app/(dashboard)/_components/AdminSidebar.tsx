@@ -195,7 +195,11 @@ export function AdminSidebar({ onExpandChange }: { onExpandChange?: (expanded: b
                         href={option.href}
                         className={cn(
                           "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
-                          pathname?.includes(option.href) &&
+                          (pathname === option.href || 
+                           (pathname?.startsWith(option.href + "/") && 
+                            !sideBarOptions.some(opt => 
+                              opt.id !== option.id && pathname?.startsWith(opt.href + "/")
+                            ))) &&
                           "bg-muted text-primary",
                         )}
                       >
@@ -216,7 +220,7 @@ export function AdminSidebar({ onExpandChange }: { onExpandChange?: (expanded: b
                         href={option.href}
                         className={cn(
                           "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
-                          pathname?.includes(option.href) &&
+                          pathname === option.href &&
                           "bg-muted text-primary",
                         )}
                       >

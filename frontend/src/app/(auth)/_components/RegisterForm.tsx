@@ -35,7 +35,6 @@ const RegisterForm = () => {
             email: "",
             password: "",
         },
-        mode: "onSubmit",
     });
 
     const onSubmit = async (values: RegisterValues) => {

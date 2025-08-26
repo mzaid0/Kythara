@@ -7,6 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  SUPER_ADMIN
+}
+
+enum Gender {
+  MEN
+  WOMEN
+  UNISEX
+  KIDS_BOYS
+  KIDS_GIRLS
+  KIDS_UNISEX
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUT_OF_STOCK
+}
+
 model User {
   id           String   @id @default(uuid())
   name         String?
@@ -14,30 +34,30 @@ model User {
   password     String
   role         Role
   createdAt    DateTime @default(now())
-  updtedAt     DateTime @updatedAt
+  updatedAt    DateTime @updatedAt
   refreshToken String?  @unique
 }
 
-enum Role {
-  USER
-  SUPER_ADMIN
-}
-
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   brand       String
   description String
   category    String
-  gender      String
+  gender      Gender
   sizes       String[]
   colors      String[]
   price       Float
   stock       Int
-  soldCount   Int
+  soldCount   Int           @default(0)
   rating      Float?
   images      String[]
-  isFeatured  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updtedAt    DateTime @updatedAt
+  isFeatured  Boolean       @default(false)
+  status      ProductStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([gender])
+  @@index([category])
+  @@index([isFeatured])
 }

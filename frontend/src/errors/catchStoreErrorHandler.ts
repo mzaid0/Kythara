@@ -7,7 +7,7 @@ interface StoreState {
 
 type SetFunction<T extends StoreState> = (partial: Partial<T>) => void
 
-export const catchErrorHandler = <T extends StoreState>(set: SetFunction<T>, error: unknown): void => {
+export const catchStoreErrorHandler = <T extends StoreState>(set: SetFunction<T>, error: unknown): void => {
 
     if (axios.isAxiosError(error)) {
         set({

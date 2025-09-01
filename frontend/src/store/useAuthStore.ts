@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { catchErrorHandler } from "@/errors/errorHandler"
+import { catchStoreErrorHandler } from "@/errors/catchStoreErrorHandler"
 import { axiosClient } from "@/utils/axiosClient"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
@@ -73,7 +73,7 @@ export const useAuthStore = create<AuthStore>()(
                     return response.data.userId
 
                 } catch (error) {
-                    catchErrorHandler(set, error)
+                    catchStoreErrorHandler(set, error)
                     return null
                 }
 
@@ -93,7 +93,7 @@ export const useAuthStore = create<AuthStore>()(
                     return true
 
                 } catch (error) {
-                    catchErrorHandler(set, error)
+                    catchStoreErrorHandler(set, error)
                     return false
                 }
             },
@@ -110,7 +110,7 @@ export const useAuthStore = create<AuthStore>()(
                     return response.data.message
 
                 } catch (error) {
-                    catchErrorHandler(set, error)
+                    catchStoreErrorHandler(set, error)
                     return null
                 }
 

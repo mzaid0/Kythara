@@ -2,37 +2,71 @@ import { z } from "zod"
 
 export const productSchema = z.object({
 
-    name: z.string().min(2, "Name must be at least 2 characters long").max(100, "Name must be at most 100 characters long"),
+    name:
+        z.string()
+            .min(2, "Name must be at least 2 characters long")
+            .max(100, "Name must be at most 100 characters long"),
 
-    brand: z.string().min(2, "Brand must be at least 2 characters long").max(50, "Brand must be at most 50 characters long"),
+    brand:
+        z.string()
+            .min(2, "Brand must be at least 2 characters long")
+            .max(50, "Brand must be at most 50 characters long"),
 
-    description: z.string().min(10, "Description must be at least 10 characters long").max(500, "Description must be at most 500 characters long"),
+    description:
+        z.string()
+            .min(10, "Description must be at least 10 characters long")
+            .max(500, "Description must be at most 500 characters long"),
 
-    category: z.string().min(2, "Category must be at least 2 characters long").max(50, "Category must be at most 50 characters long"),
+    gender:
+        z.enum(["MEN", "WOMEN", "MEN_AND_WOMEN", "KIDS_BOY", "KIDS_GIRL", "KIDS_BOYS_AND_GIRL"], {
+            message: "Gender is required"
+        }),
 
-    gender: z.enum(["MEN", "WOMEN", "UNISEX", "KIDS_BOYS", "KIDS_GIRLS", "KIDS_UNISEX"], {
-        message: "Gender is required"
-    }),
+    price:
+        z.number()
+            .min(0, "Price must be a positive number"),
 
-    sizes: z.array(z.string().min(1)).min(1, "At least one size is required"),
+    stock:
+        z.number()
+            .min(0, "Stock must be a positive number"),
 
-    colors: z.array(z.string().min(1)).min(1, "At least one color is required"),
+    soldCount:
+        z.number()
+            .min(0, "Sold count must be a positive number")
+            .default(0),
 
-    price: z.number().min(0, "Price must be a positive number"),
+    rating:
+        z.number()
+            .min(0)
+            .max(5)
+            .optional(),
 
-    stock: z.number().min(0, "Stock must be a positive number"),
+    isFeatured:
+        z.boolean()
+            .default(false),
 
-    soldCount: z.number().min(0, "Sold count must be a positive number").default(0),
+    isOnSale:
+        z.boolean()
+            .default(false),
 
-    rating: z.number().optional(),
+    status:
+        z.enum(["ACTIVE", "INACTIVE", "OUT_OF_STOCK"])
+            .default("ACTIVE"),
 
-    images: z.array(z.string().min(1)).min(1, "At least one image is required"),
+    categoryId:
+        z.number()
+            .min(1, "Category ID is required"),
 
-    isFeatured: z.boolean().optional(),
+    imageUrls:
+        z.array(z.string().url("Invalid image URL"))
+            .min(1, "At least one image is required"),
 
-    status: z.enum(["ACTIVE", "INACTIVE", "OUT_OF_STOCK"], {
-        message: "Status is required"
-    })
+    specifications:
+        z.array(z.object({
+            specKey: z.string().min(1, "Specification key is required"),
+            specValue: z.string().min(1, "Specification value is required")
+        })).optional().default([])
 })
 
-export type ProductValues = z.infer<typeof productSchema>
+export type ProductSchemaValidator = z.infer<typeof productSchema>
+export type ProductSchemaValues = z.input<typeof productSchema>

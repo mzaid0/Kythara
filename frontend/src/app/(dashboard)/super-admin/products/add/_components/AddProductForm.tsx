@@ -1,7 +1,70 @@
+"use client"
+import InputFormField from "@/app/_components/InputFormField"
+import SearchableSelect from "@/app/_components/SearchableSelect"
+import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
+import { productSchema, ProductSchemaValues } from "@/validators/productSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 
 const AddProductForm = () => {
+    const form = useForm<ProductSchemaValues>({
+        resolver: zodResolver(productSchema),
+        defaultValues: {
+            name: "",
+            brand: "",
+            description: "",
+            gender: "MEN",
+            price: 0,
+            stock: 0,
+            soldCount: 0,
+            rating: 0,
+            isFeatured: false,
+            isOnSale: false,
+            status: "ACTIVE",
+            categoryId: 0,
+            imageUrls: [""],
+            specifications: []
+        }
+    })
+
+    const statusOptions = [
+        { id: "ACTIVE", name: "Active" },
+        { id: "INACTIVE", name: "Inactive" },
+        { id: "OUT_OF_STOCK", name: "Out of Stock" }
+    ]
+
+    const onSubmit = (data: ProductSchemaValues) => {
+        console.log(data)
+    }
+
     return (
-        <div>AddProductForm</div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+                <InputFormField
+                    name="name"
+                    placeholder="Product Name"
+                    formControl={form.control}
+                    label="Name"
+                />
+
+                <div className="space-y-2">
+
+                    <SearchableSelect
+                        label="Status"
+                        options={statusOptions}
+                        value={form.watch("status")}
+                        onSelect={(option) => {
+                            form.setValue("status", option?.id as "ACTIVE" | "INACTIVE" | "OUT_OF_STOCK")
+                        }}
+                    />
+                </div>
+
+
+                <Button type="submit">Add Product</Button>
+            </form>
+        </Form>
     )
 }
 

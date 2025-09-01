@@ -15,10 +15,10 @@ enum Role {
 enum Gender {
   MEN
   WOMEN
-  UNISEX
-  KIDS_BOYS
-  KIDS_GIRLS
-  KIDS_UNISEX
+  MEN_AND_WOMEN
+  KIDS_BOY
+  KIDS_GIRL
+  KIDS_BOYS_AND_GIRL
 }
 
 enum ProductStatus {
@@ -39,25 +39,63 @@ model User {
 }
 
 model Product {
-  id          Int           @id @default(autoincrement())
-  name        String
-  brand       String
-  description String
-  category    String
-  gender      Gender
-  sizes       String[]
-  colors      String[]
-  price       Float
-  stock       Int
-  soldCount   Int           @default(0)
-  rating      Float?
-  images      String[]
-  isFeatured  Boolean       @default(false)
-  status      ProductStatus @default(ACTIVE)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id             Int                    @id @default(autoincrement())
+  name           String
+  brand          String
+  description    String
+  gender         Gender
+  price          Float
+  stock          Int
+  soldCount      Int                    @default(0)
+  rating         Float?
+  isFeatured     Boolean                @default(false)
+  isOnSale       Boolean                @default(false)
+  status         ProductStatus          @default(ACTIVE)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  
+  specifications ProductSpecification[]
+  images         Image[]
+  category       Category               @relation(fields: [categoryId], references: [id])
+  categoryId     Int 
 
   @@index([gender])
-  @@index([category])
+  @@index([categoryId])
   @@index([isFeatured])
+  @@index([isOnSale])
+  @@index([status])
+  @@index([brand])
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  parentId  Int?
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  products  Product[]
+
+  @@index([parentId])
+}
+
+model Image {
+  id        String    @id @default(cuid())
+  url       String    @unique
+  alt       String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model ProductSpecification {
+  id        Int     @id @default(autoincrement())
+  specKey   String
+  specValue String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, specKey])
+  @@index([specKey])
 }

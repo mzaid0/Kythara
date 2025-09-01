@@ -7,28 +7,31 @@ interface GetProductParams {
 }
 
 interface ResponseBody {
-    success: boolean
-    message: string
-    product: Product
+    success: boolean;
+    message: string;
+    product?: Product;
 }
 
 export const updateProduct = async (req: Request<GetProductParams>, res: Response): Promise<void> => {
-
     try {
         const { id } = req.params;
         const productId = Number(id);
 
-        const { name, brand, description, category, colors, gender, price, sizes, stock, isFeatured, images } = req.body as Product;
+        const { name, brand, description, gender, price, stock, isFeatured, isOnSale, categoryId, imageUrls, specifications } = req.body;
 
         const existingProduct = await prisma.product.findUnique({
-            where: { id: productId }
+            where: { id: productId },
+            include: {
+                images: true,
+                specifications: true
+            }
         });
 
         if (!existingProduct) {
             res.status(404).json({
                 success: false,
                 message: "Product not found"
-            });
+            } as ResponseBody);
             return;
         }
 
@@ -38,14 +41,26 @@ export const updateProduct = async (req: Request<GetProductParams>, res: Respons
                 name: name || existingProduct.name,
                 brand: brand || existingProduct.brand,
                 description: description || existingProduct.description,
-                category: category || existingProduct.category,
                 gender: gender || existingProduct.gender,
-                colors: colors ? (typeof colors === 'string' ? JSON.parse(colors) : colors) : existingProduct.colors,
-                sizes: sizes ? (typeof sizes === 'string' ? JSON.parse(sizes) : sizes) : existingProduct.sizes,
                 price: price ? Number(price) : existingProduct.price,
                 stock: stock !== undefined ? Number(stock) : existingProduct.stock,
-                images: images ? (typeof images === 'string' ? JSON.parse(images) : images) : existingProduct.images,
-                isFeatured: isFeatured !== undefined ? isFeatured : existingProduct.isFeatured
+                isFeatured: isFeatured !== undefined ? isFeatured : existingProduct.isFeatured,
+                isOnSale: isOnSale !== undefined ? isOnSale : existingProduct.isOnSale,
+                categoryId: categoryId ? Number(categoryId) : existingProduct.categoryId,
+                images: imageUrls ? {
+                    set: [],
+                    connectOrCreate: imageUrls.map((url: string) => ({
+                        where: { url },
+                        create: { url }
+                    }))
+                } : undefined,
+                specifications: specifications ? {
+                    deleteMany: {},
+                    create: specifications.map((spec: any) => ({
+                        specKey: spec.specKey,
+                        specValue: spec.specValue
+                    }))
+                } : undefined
             }
         });
 
@@ -62,6 +77,6 @@ export const updateProduct = async (req: Request<GetProductParams>, res: Respons
         res.status(500).json({
             success: false,
             message: "Failed to update product"
-        });
+        } as ResponseBody);
     }
-}
+};

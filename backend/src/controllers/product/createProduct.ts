@@ -1,49 +1,101 @@
+import { Gender, Product } from "@prisma/client";
 import { Request, Response } from "express";
 import { prisma } from "../../configs/prisma";
-import { Product } from "@prisma/client";
+
+interface ProductInput {
+    name: string;
+    brand: string;
+    description: string;
+    gender: Gender;
+    price: number;
+    stock: number;
+    isFeatured?: boolean;
+    isOnSale?: boolean;
+    categoryId: number;
+    imageUrls: string[];
+    specifications?: {
+        specKey: string;
+        specValue: string;
+    }[];
+}
 
 interface ResponseBody {
-    success: boolean
-    message: string
-    product: Product
+    success: boolean;
+    message: string;
+    product?: Product;
 }
 
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        const { name, brand, description, category, colors, gender, price, sizes, stock, images } = req.body as Product;
+        const { name, brand, description, gender, price, stock, isFeatured = false, isOnSale = false, categoryId, imageUrls, specifications = [] } = req.body as ProductInput;
 
-        const newProduct = await prisma.product.create({
-            data: {
-                name,
-                brand,
-                description,
-                category,
-                gender,
-                colors: typeof colors === 'string' ? JSON.parse(colors) : colors,
-                sizes: typeof sizes === 'string' ? JSON.parse(sizes) : sizes,
-                price: Number(price),
-                stock: Number(stock),
-                soldCount: 0,
-                rating: null,
-                images: typeof images === 'string' ? JSON.parse(images) : images,
-                isFeatured: false
-            }
-        })
 
-        const responseBody: ResponseBody = {
-            success: true,
-            message: "Product created successfully",
-            product: newProduct
+        if (!imageUrls || imageUrls.length === 0) {
+            res.status(400).json({
+                success: false,
+                message: "At least one image URL is required"
+            } as ResponseBody);
+            return;
         }
 
-        res.status(201).json(responseBody);
+        const categoryExists = await prisma.category.findUnique({
+            where: { id: categoryId }
+        });
+
+        if (!categoryExists) {
+            res.status(400).json({
+                success: false,
+                message: "Category not found"
+            } as ResponseBody);
+            return;
+        }
+
+        const createdProduct = await prisma.$transaction(async (tx) => {
+            const product = await tx.product.create({
+                data: {
+                    name,
+                    brand,
+                    description,
+                    gender,
+                    price,
+                    stock,
+                    isFeatured,
+                    isOnSale,
+                    categoryId,
+                    images: {
+                        connectOrCreate: imageUrls.map(url => ({
+                            where: { url },
+                            create: { url }
+                        }))
+                    }
+                }
+            });
+
+            if (specifications.length > 0) {
+                await tx.productSpecification.createMany({
+                    data: specifications.map(spec => ({
+                        specKey: spec.specKey,
+                        specValue: spec.specValue,
+                        productId: product.id
+                    }))
+                });
+            }
+
+            return product;
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Product created successfully",
+            product:createdProduct
+        } as ResponseBody);
 
     } catch (error) {
-        console.log(error);
+        console.error("Product creation error:", error);
         res.status(500).json({
             success: false,
             message: "Failed to create product"
-        });
+        } as ResponseBody);
     }
-}
+};

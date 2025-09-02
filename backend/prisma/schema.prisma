@@ -41,7 +41,6 @@ model User {
 model Product {
   id          Int           @id @default(autoincrement())
   name        String
-  brand       String
   description String
   gender      Gender
   price       Float
@@ -58,13 +57,15 @@ model Product {
   images         Image[]
   category       Category               @relation(fields: [categoryId], references: [id])
   categoryId     Int
+  brand          Brand                  @relation(fields: [brandId], references: [id])
+  brandId        Int
 
   @@index([gender])
   @@index([categoryId])
   @@index([isFeatured])
   @@index([isOnSale])
   @@index([status])
-  @@index([brand])
+  @@index([brandId])
 }
 
 model Category {
@@ -101,8 +102,9 @@ model ProductSpecification {
 }
 
 model Brand {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
 }

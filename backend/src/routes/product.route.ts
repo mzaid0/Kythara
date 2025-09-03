@@ -9,11 +9,11 @@ import { isSuperAdmin } from "../middlewares/isSuperAdmin"
 
 const router = Router()
 
-router.route("/products").post(isAuthenticated, isSuperAdmin, createProduct)
-router.route("/products").get(isAuthenticated, isSuperAdmin, getAllProducts)
+router.route("/").post(isAuthenticated, isSuperAdmin, createProduct)
+router.route("/").get(isAuthenticated, isSuperAdmin, getAllProducts)
 
-router.route("/products/:id").get(isAuthenticated, getProductById)
-router.route("/products/:id").put(isAuthenticated, isSuperAdmin, updateProduct)
-router.route("/products/:id").delete(isAuthenticated, isSuperAdmin, deleteProduct)
+router.route("/:id").get(isAuthenticated, getProductById)
+router.route("/:id").put(isAuthenticated, isSuperAdmin, updateProduct)
+router.route("/:id").delete(isAuthenticated, isSuperAdmin, deleteProduct)
 
 export default router

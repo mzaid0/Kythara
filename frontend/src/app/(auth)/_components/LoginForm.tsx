@@ -38,6 +38,7 @@ const LoginForm = () => {
     });
 
     const onSubmit = async (values: LoginValues) => {
+        
         setIsLoading(true);
 
         const checkFirstLevelOfValidation = await protectAuthActions(values.email);

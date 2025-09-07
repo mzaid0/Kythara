@@ -38,6 +38,7 @@ const RegisterForm = () => {
     });
 
     const onSubmit = async (values: RegisterValues) => {
+        
         setIsLoading(true);
 
         const checkFirstLevelOfValidation = await protectAuthActions(values.email);

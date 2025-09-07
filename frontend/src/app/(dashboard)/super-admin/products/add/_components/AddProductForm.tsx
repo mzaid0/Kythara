@@ -1,11 +1,12 @@
 "use client"
+import BrandSelectBox from "@/app/_components/BrandsSelectBox"
 import InputFormField from "@/app/_components/InputFormField"
 import SearchableSelect from "@/app/_components/SearchableSelect"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { productSchema, ProductSchemaValues } from "@/validators/productSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 
 const AddProductForm = () => {
     const form = useForm<ProductSchemaValues>({
@@ -49,8 +50,21 @@ const AddProductForm = () => {
                     label="Name"
                 />
 
-                <div className="space-y-2">
+                <Controller
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                        <BrandSelectBox
+                            label="Brand"
+                            placeholder="Select brand..."
+                            value={null}
+                            disabled={form.formState.isSubmitting}
+                            onSelect={(brand) => field.onChange(brand?.name ?? "")}
+                        />
+                    )}
+                />
 
+                <div className="space-y-2">
                     <SearchableSelect
                         label="Status"
                         options={statusOptions}
